@@ -3,12 +3,11 @@
 <html>
 	<head>
 		<meta name="layout" content="main">
-		<title>Team Leaderboard</title>
+		<title>Team Leaderboard (WOD ${wod.number}: ${wod.name})</title>
 	</head>
 	<body>
 		<div id="list-score" class="content scaffold-list" role="main">
-			<h1>WOD: ${wod.name}</h1>
-			<h2>Male Leaderboard</h2>
+			<h1>Team Leaderboard (WOD ${wod.number}: ${wod.name})</h1>
 			<table>
 				<thead>
 					<tr>
@@ -18,11 +17,11 @@
 					</tr>
 				</thead>
 				<tbody>
-					<g:each in="${teamScoreMap}" status="i" var="entry">
+					<g:each in="${teamScores}" status="i" var="teamScore">
 						<tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-							<td>&nbsp;</td>
-							<td>${entry.key.name}</td>
-							<td>${entry.value}</td>
+							<td>${teamScore.place}</td>
+							<td>${teamScore.team.name}</td>
+							<td>${teamScore.score}</td>
 						</tr>
 					</g:each>
 				</tbody>
