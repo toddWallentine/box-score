@@ -12,6 +12,5 @@ import org.junit.*
 class TeamControllerTests {
 
     void testSomething() {
-       fail "Implement me"
     }
 }

@@ -12,6 +12,5 @@ import org.junit.*
 class AthleteControllerTests {
 
     void testSomething() {
-       fail "Implement me"
     }
 }
