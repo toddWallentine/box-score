@@ -33,21 +33,7 @@ class ScoreController {
 		// Collect up the best 3 male and best 3 female athletes to create the team score.
 		def teamScores = []
 		Team.list().each { team ->
-			def teamReps = 0 // TODO Count the reps for top 3 male and top 3 female
-
-			def maleScores = Score.findAll(sort: "reps", order: "desc", max: 3) {
-				wod == wod && athlete.gender == "M" && athlete.team == team
-			}
-			maleScores.each { score ->
-				teamReps += score.reps
-			}
-			def femaleScores = Score.findAll(sort: "reps", order: "desc", max: 3) {
-				wod == wod && athlete.gender == "F" && athlete.team == team
-			}
-			femaleScores.each { score ->
-				teamReps += score.reps
-			}
-
+			def teamReps = getTeamReps(team, wod)
 			def teamScore = new TeamScore(team: team, score: teamReps)
 			teamScores.add(teamScore)
 		}
@@ -64,13 +50,40 @@ class ScoreController {
 		def lastScore = -1
 		def place = 0
 		teamScores.each { teamScore ->
-			def score = teamScore.score
-
-			if(score != lastScore) place++
+			if(teamScore.score != lastScore) place++
 			teamScore.place = place
+			lastScore = teamScore.score
 		}
 
 		render(view: "board2", model: [wod: wod, teamScores: teamScores])
+	}
+
+	/**
+	 * Get the number of reps that a team did for a specific WOD.
+	 *
+	 * @param team The Team to count the reps for.
+	 * @param wod The WOD to count the reps for.
+	 * @return The total number of reps for the top 3 males and top 3 females
+	 *         on the given Team for the given WOD.
+	 */
+	private int getTeamReps(team, wod) {
+
+		def teamReps = 0
+
+		def maleScores = Score.findAll(sort: "reps", order: "desc", max: 3) {
+			wod == wod && athlete.gender == "M" && athlete.team == team
+		}
+		maleScores.each { score ->
+			teamReps += score.reps
+		}
+		def femaleScores = Score.findAll(sort: "reps", order: "desc", max: 3) {
+			wod == wod && athlete.gender == "F" && athlete.team == team
+		}
+		femaleScores.each { score ->
+			teamReps += score.reps
+		}
+
+		return teamReps
 	}
 
 	/**
@@ -108,6 +121,45 @@ class ScoreController {
 		render(view: "board3", model: [wods: wods, maleScores: maleScores, femaleScores: femaleScores])
 	}
 
+	/**
+	 * Display the overall team leaderboard.
+	 */
+	def board4() {
+		def overallScoreComparator = [
+			compare: { a,b ->
+				a.equals(b)? 0: a.totalPlace < b.totalPlace? -1: 1
+			}
+		] as Comparator
+
+		def wods = Workout.list()
+
+		def scores = []
+		def teams = Team.list()
+		teams.each { team ->
+			def wodScoreMap = [:]
+			def totalPlace = 0
+			wods.each { wod ->
+				def teamScores = getTeamScores(wod)
+				def teamScore = teamScores.get(team)
+				wodScoreMap.put(wod, teamScore)
+				totalPlace += teamScore.place
+			}
+			def teamOverallScore = new TeamOverallScore(team: team,
+				place: 0, totalPlace: totalPlace, wodScoreMap: wodScoreMap)
+			scores.add(teamOverallScore)
+		}
+		scores.sort(true, overallScoreComparator)
+		def lastPlace = -1
+		def place = 0
+		scores.each { overallScore ->
+			if(overallScore.totalPlace != lastPlace) place++
+			overallScore.place = place
+			lastPlace = overallScore.totalPlace
+		}
+
+		render(view: "board4", model: [wods: wods, scores: scores])
+	}
+
 	private getScores(wods, g) {
 		def scores = []
 
@@ -130,16 +182,6 @@ class ScoreController {
 		}
 
 		return scores
-	}
-
-	/**
-	 * Display the overall team leaderboard.
-	 */
-	def board4() {
-		def wods = Workout.list()
-		def scores = []
-
-		render(view: "board4", model: [wods: wods, scores: scores])
 	}
 
 	/**
@@ -208,5 +250,37 @@ class ScoreController {
     	}
 
 		return place
+	}
+
+	private getTeamScores(wod) {
+		def teamScores = []
+		Team.list().each { team ->
+			def teamReps = getTeamReps(team, wod)
+			def teamScore = new TeamScore(team: team, score: teamReps)
+			teamScores.add(teamScore)
+		}
+
+		// Sort the TeamScore instances on reps
+		def teamScoreComparator = [
+			compare: { a,b ->
+				a.equals(b)? 0: a.score > b.score? -1: 1
+			}
+		] as Comparator
+		teamScores.sort(true, teamScoreComparator)
+
+		// Set the place (after sorting)
+		def lastScore = -1
+		def place = 0
+		teamScores.each { teamScore ->
+			if(teamScore.score != lastScore) place++
+			teamScore.place = place
+			lastScore = teamScore.score
+		}
+
+		def teamScoreMap = [:]
+		teamScores.each { teamScore ->
+			teamScoreMap.put(teamScore.team, teamScore)
+		}
+		return teamScoreMap
 	}
 }
