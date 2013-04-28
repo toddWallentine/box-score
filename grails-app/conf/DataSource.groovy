@@ -26,7 +26,10 @@ environments {
     production {
         dataSource {
             dbCreate = "update"
-            url = "jdbc:h2:prodDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
+            url = "jdbc:mysql://ec2-23-21-211-172.compute-1.amazonaws.com:3306/box-score"
+            username = "box"
+            password = "score"
+            /*
             pooled = true
             properties {
                maxActive = -1
@@ -38,6 +41,7 @@ environments {
                testOnReturn=true
                validationQuery="SELECT 1"
             }
+            */
         }
     }
 }
