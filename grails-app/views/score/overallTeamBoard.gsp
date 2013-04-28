@@ -2,17 +2,20 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta name="layout" content="main">
-		<title>Overall Team Leaderboard</title>
+		<meta name="layout" content="box">
+		<r:require modules="bootstrap"/>
 	</head>
 	<body>
-		<div id="list-score" class="content scaffold-list" role="main">
-			<h1>Overall Leaderboard</h1>
-			<table>
+		<div class="page-header">
+			<h1>Overall Team Leaderboard</h1>
+		</div>
+		<div class="row">
+		<div class="span12">
+			<table class="table table-striped">
 				<thead>
 					<tr>
-						<th>&nbsp;</th>
-						<th>Team</th>
+						<th>Place</th>
+						<th>Team Name</th>
 						<g:each in="${wods}" status="i" var="wod">
 							<th>${wod.number}: ${wod.name}</th>
 						</g:each>
@@ -31,6 +34,7 @@
 					</g:each>
 				</tbody>
 			</table>
+		</div>
 		</div>
 	</body>
 </html>

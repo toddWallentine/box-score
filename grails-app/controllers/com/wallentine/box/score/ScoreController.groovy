@@ -26,7 +26,7 @@ class ScoreController {
 	 *
 	 * @param id The WOD ID.
 	 */
-	def board2() {
+	def teamBoard() {
 		def wodID = params.id
 		def wod = Workout.get(wodID)
 
@@ -55,7 +55,7 @@ class ScoreController {
 			lastScore = teamScore.score
 		}
 
-		render(view: "board2", model: [wod: wod, teamScores: teamScores])
+		render(view: "teamBoard", model: [wod: wod, teamScores: teamScores])
 	}
 
 	/**
@@ -89,7 +89,7 @@ class ScoreController {
 	/**
 	 * Display the overall individual leaderboard.
 	 */
-	def board3() {
+	def overallBoard() {
 
 		def wods = Workout.list()
 		def overallScoreComparator = [
@@ -118,13 +118,13 @@ class ScoreController {
 			lastPlace = athleteOverallScore.totalPlace
 		}
 
-		render(view: "board3", model: [wods: wods, maleScores: maleScores, femaleScores: femaleScores])
+		render(view: "overallBoard", model: [wods: wods, maleScores: maleScores, femaleScores: femaleScores])
 	}
 
 	/**
 	 * Display the overall team leaderboard.
 	 */
-	def board4() {
+	def overallTeamBoard() {
 		def overallScoreComparator = [
 			compare: { a,b ->
 				a.equals(b)? 0: a.totalPlace < b.totalPlace? -1: 1
@@ -157,11 +157,11 @@ class ScoreController {
 			lastPlace = overallScore.totalPlace
 		}
 
-		render(view: "board4", model: [wods: wods, scores: scores])
+		render(view: "overallTeamBoard", model: [wods: wods, scores: scores])
 	}
 
 	private getScores(wods, g) {
-		def scores = []
+		def overallScores = []
 
 		def athletes = Athlete.findAll() {
 			gender == g
@@ -171,17 +171,23 @@ class ScoreController {
 			def totalPlace = 0
 			wods.each { wod ->
 				def score = Score.findByAthleteAndWod(athlete, wod)
-				def s = score.reps
-				def p = determinePlaceInWod(wod, athlete)
-				def athleteScore = new AthleteScore(athlete: athlete, score: s, place: p)
+				def athleteScore
+				if(score) {
+					def s = score.reps
+					def p = determinePlaceInWod(wod, athlete)
+					athleteScore = new AthleteScore(athlete: athlete, score: s, place: p)
+				} else {
+					def lastPlace = Score.findAll() { wod == wod && athlete.gender == athlete.gender }.size
+					athleteScore = new AthleteScore(athlete: athlete, score: 0, place: lastPlace)
+				}
 				wsm.put(wod, athleteScore)
-				totalPlace += p
+				totalPlace += athleteScore.place
 			}
-			def score = new AthleteOverallScore(athlete: athlete, place: 1, totalPlace: totalPlace, wodScoreMap: wsm)
-			scores.add(score)
+			def overallScore = new AthleteOverallScore(athlete: athlete, place: 1, totalPlace: totalPlace, wodScoreMap: wsm)
+			overallScores.add(overallScore)
 		}
 
-		return scores
+		return overallScores
 	}
 
 	/**

@@ -2,14 +2,17 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta name="layout" content="main">
-		<title>Leaderboard</title>
+		<meta name="layout" content="box">
+		<r:require modules="bootstrap"/>
 	</head>
 	<body>
-		<div id="list-score" class="content scaffold-list" role="main">
-			<h1>WOD: ${wod.name}</h1>
-			<h2>Male Leaderboard</h2>
-			<table>
+		<div class="page-header">
+			<h1>Leaderboard (WOD ${wod.number}: ${wod.name})</h1>
+		</div>
+		<div class="row">
+		<div class="span5">
+			<h1>Men</h1>
+			<table class="table table-striped">
 				<thead>
 					<tr>
 						<th>&nbsp;</th>
@@ -27,9 +30,11 @@
 					</g:each>
 				</tbody>
 			</table>
+		</div>
 
-			<h2>Female Leaderboard</h2>
-			<table>
+		<div class="span5 offset2">
+			<h1>Women</h1>
+			<table class="table table-striped">
 				<thead>
 					<tr>
 						<th>&nbsp;</th>
@@ -47,6 +52,7 @@
 					</g:each>
 				</tbody>
 			</table>
+		</div>
 		</div>
 	</body>
 </html>

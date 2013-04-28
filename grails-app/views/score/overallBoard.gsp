@@ -2,13 +2,14 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta name="layout" content="main">
-		<title>Overall Leaderboard</title>
+		<meta name="layout" content="box">
+		<r:require modules="bootstrap"/>
 	</head>
 	<body>
-		<div id="list-score" class="content scaffold-list" role="main">
-			<h1>Male Leaderboard</h1>
-			<table>
+		<div class="row">
+		<div class="span5">
+			<h1>Men</h1>
+			<table class="table table-striped">
 				<thead>
 					<tr>
 						<th>&nbsp;</th>
@@ -25,15 +26,18 @@
 							<td>${maleScore.athlete.name}</td>
 							<g:each in="${wods}" status="j" var="wod">
 								<g:set var="currentScore" value="${maleScore.wodScoreMap.get(wod)}" />
-								<td>${currentScore.place} (${currentScore.score})</td>
+								<g:if test="${currentScore != null}">
+									<td>${currentScore.place} (${currentScore.score})</td>
+								</g:if>
 							</g:each>
 						</tr>
 					</g:each>
 				</tbody>
 			</table>
-
-			<h1>Female Leaderboard</h1>
-			<table>
+		</div>
+		<div class="span5 offset2">
+			<h1>Women</h1>
+			<table class="table table-striped">
 				<thead>
 					<tr>
 						<th>&nbsp;</th>
@@ -50,12 +54,15 @@
 							<td>${femaleScore.athlete.name}</td>
 							<g:each in="${wods}" status="j" var="wod">
 								<g:set var="currentScore" value="${femaleScore.wodScoreMap.get(wod)}" />
-								<td>${currentScore.place} (${currentScore.score})</td>
+								<g:if test="${currentScore != null}">
+									<td>${currentScore.place} (${currentScore.score})</td>
+								</g:if>
 							</g:each>
 						</tr>
 					</g:each>
 				</tbody>
 			</table>
+		</div>
 		</div>
 	</body>
 </html>
