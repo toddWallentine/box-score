@@ -4,6 +4,19 @@ class BootStrap {
 
     def init = { servletContext ->
 
+        def MAX_TEAMS = 5
+        def MAX_ATHLETES = 10
+        for(int i = 0; i < MAX_TEAMS; i++) {
+            def team = new Team(name: "Team ${i}")
+            for(int j = 0; j < MAX_ATHLETES; j++) {
+                def gender = (j % 2 == 0) ? "M" : "F"
+                def athlete = new Athlete(name: "Athlete ${i}${j}", gender: gender)
+                team.addToAthletes(athlete)
+            }
+            team.save()
+        }
+
+        /*
     	def mpTeam = new Team(name: "Maximum Performance")
     	def todd = new Athlete(name: "Todd Wallentine", gender: "M")
     	mpTeam.addToAthletes(todd)
@@ -18,8 +31,9 @@ class BootStrap {
     	def rachell = new Athlete(name: "Rachell Bittle", gender: "F")
     	mpTeam.addToAthletes(rachell)
     	mpTeam.save()
-    	// TODO Add more athletes to MP team
+        */
 
+        /*
     	def cfmkTeam = new Team(name: "CrossFit Manhattan KS")
     	def megan = new Athlete(name: "Megan John", gender: "F")
     	cfmkTeam.addToAthletes(megan)
@@ -34,9 +48,7 @@ class BootStrap {
     	def alex = new Athlete(name: "Alex Werner", gender: "M")
     	cfmkTeam.addToAthletes(alex)
     	cfmkTeam.save()
-    	// TODO Add more athletes to CFMK team
-
-    	// TODO Add more teams: CF785, KSUCF, ...
+        */
 
     	new Workout(number: 1, name: "Killer").save()
     	new Workout(number: 2, name: "Tame").save()
