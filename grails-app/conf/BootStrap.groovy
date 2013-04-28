@@ -57,9 +57,9 @@ class BootStrap {
     	def random = new java.util.Random()
     	Athlete.list().each { athlete ->
     		Workout.list().each { wod ->
-    			def reps = Math.abs(random.nextInt() % 20 + 1)
-    			def score = new Score(reps: reps, athlete: athlete, wod: wod)
-    			score.save()
+                def reps = Math.abs(random.nextInt() % 20 + 1)
+                def score = new Score(reps: reps, athlete: athlete, wod: wod)
+                score.save()
     		}
     	}
     }
