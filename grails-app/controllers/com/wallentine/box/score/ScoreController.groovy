@@ -79,44 +79,67 @@ class ScoreController {
 	def board3() {
 
 		def wods = Workout.list()
-		/*
-		def maleScores = []
-		def rawMaleScores = Score.findAll(sort: "reps", order: "desc") {
-			athlete.gender == "M"
-		}
-		rawMaleScores.each { rawMaleScore ->
-			def maleScore = new AthleteOverallScore(athlete: rawMaleScore.athlete)
-			// TODO Set the maleScore place, totalPlace, and wodScoreMap
-			maleScores.add(maleScore)
+		def overallScoreComparator = [
+			compare: { a,b ->
+				a.equals(b)? 0: a.totalPlace < b.totalPlace? -1: 1
+			}
+		] as Comparator
+
+		def maleScores = getScores(wods, "M")
+		maleScores.sort(true, overallScoreComparator)
+		def lastPlace = -1
+		def place = 0
+		maleScores.each { athleteOverallScore ->
+			if(athleteOverallScore.totalPlace != lastPlace) place++
+			athleteOverallScore.place = place
+			lastPlace = athleteOverallScore.totalPlace
 		}
 
-		def femaleScores = []
-		*/
-		// TODO Collect up all the athlete scores
-
-		def maleAthletes = Athlete.findAll() {
-			gender == "M"
+		def femaleScores = getScores(wods, "F")
+		femaleScores.sort(true, overallScoreComparator)
+		lastPlace = -1
+		place = 0
+		femaleScores.each { athleteOverallScore ->
+			if(athleteOverallScore.totalPlace != lastPlace) place++
+			athleteOverallScore.place = place
+			lastPlace = athleteOverallScore.totalPlace
 		}
-		def maleScores = []
-		maleAthletes.each { athlete ->
+
+		render(view: "board3", model: [wods: wods, maleScores: maleScores, femaleScores: femaleScores])
+	}
+
+	private getScores(wods, g) {
+		def scores = []
+
+		def athletes = Athlete.findAll() {
+			gender == g
+		}
+		athletes.each { athlete ->
 			def wsm = [:]
 			def totalPlace = 0
 			wods.each { wod ->
-				def s = 10 // determine the score
-				def p = 1 // determine the place
-				def athleteScore = new AthleteScore(athlete: athletes[0], score: s, place: p)
-				wsm1.put(wod, athleteScore)
+				def score = Score.findByAthleteAndWod(athlete, wod)
+				def s = score.reps
+				def p = determinePlaceInWod(wod, athlete)
+				def athleteScore = new AthleteScore(athlete: athlete, score: s, place: p)
+				wsm.put(wod, athleteScore)
 				totalPlace += p
 			}
-			def maleScore = new AthleteOverallScore(athlete: athletes[0], place: 1, totalPlace: totalPlace, wodScoreMap: wsm)
-			maleScores.add(maleScore)
+			def score = new AthleteOverallScore(athlete: athlete, place: 1, totalPlace: totalPlace, wodScoreMap: wsm)
+			scores.add(score)
 		}
-		// TODO Sort the maleScores by totalPlace, lowest to highest
-		// TODO Set the place based upon the current order
 
-		def femaleScores = []
+		return scores
+	}
 
-		render(view: "board3", model: [wods: wods, maleScores: maleScores, femaleScores: femaleScores])
+	/**
+	 * Display the overall team leaderboard.
+	 */
+	def board4() {
+		def wods = Workout.list()
+		def scores = []
+
+		render(view: "board4", model: [wods: wods, scores: scores])
 	}
 
 	/**
@@ -152,5 +175,38 @@ class ScoreController {
 		}
 
 		return scoreMap
+	}
+
+	/**
+	 * Get a Map of Athlete to AthleteScore for the given WOD and gender.
+	 *
+	 * @param wod The Workout to get scores for.
+	 * @param gender "M" or "F"
+	 * @return Map<Athlete, AthleteScore>
+	 */
+	private getAthleteScores(wod, gender) {
+		def athleteScoreMap = [:]
+
+		def scoreMap = getScoreMap(wod, gender)
+		scoreMap.each{ score, place ->
+			def athleteScore = new AthleteScore(athlete: score.athlete,
+				score: score.reps, place: place, wod: score.wod)
+			scoreMap.put(score.athlete, athleteScore)
+		}
+
+		return athleteScoreMap
+	}
+
+	private determinePlaceInWod(wod, athlete) {
+		def place = 0
+
+		def athleteScoreMap = getScoreMap(wod, athlete.gender)
+    	athleteScoreMap.each { key, value ->
+      		if(key.athlete == athlete) {
+        		place = value
+      		}
+    	}
+
+		return place
 	}
 }

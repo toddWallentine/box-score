@@ -10,6 +10,7 @@ class AthleteScore {
 	Athlete athlete
 	int score
 	int place
+	Workout wod
 	
 	// TODO Add compare methods that compare place and score. Useful in calling List.sort(). -todd 17Apr2013
 }
