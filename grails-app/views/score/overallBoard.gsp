@@ -6,8 +6,8 @@
 		<r:require modules="bootstrap"/>
 	</head>
 	<body>
-		<div class="row">
-		<div class="span5">
+		<div class="row-fluid">
+		<div class="span6">
 			<h1>Men</h1>
 			<table class="table table-striped">
 				<thead>
@@ -35,7 +35,7 @@
 				</tbody>
 			</table>
 		</div>
-		<div class="span5 offset2">
+		<div class="span6">
 			<h1>Women</h1>
 			<table class="table table-striped">
 				<thead>

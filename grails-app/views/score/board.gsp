@@ -9,8 +9,8 @@
 		<div class="page-header">
 			<h1>Leaderboard (WOD ${wod.number}: ${wod.name})</h1>
 		</div>
-		<div class="row">
-		<div class="span5">
+		<div class="row-fluid">
+		<div class="span6">
 			<h1>Men</h1>
 			<table class="table table-striped">
 				<thead>
@@ -32,7 +32,7 @@
 			</table>
 		</div>
 
-		<div class="span5 offset2">
+		<div class="span6">
 			<h1>Women</h1>
 			<table class="table table-striped">
 				<thead>

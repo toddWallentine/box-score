@@ -9,7 +9,7 @@
 		<div class="page-header">
 			<h1>Team Leaderboard (WOD ${wod.number}: ${wod.name})</h1>
 		</div>
-		<div class="row">
+		<div class="row-fluid">
 		<div class="span12">
 			<table class="table table-striped">
 				<thead>
