@@ -25,7 +25,7 @@ environments {
     }
     production {
         dataSource {
-            dbCreate = "create-drop"
+            dbCreate = "create-drop" // TODO Change to update before box battle
             url = "jdbc:mysql://ec2-23-21-211-172.compute-1.amazonaws.com:3306/box-score"
             username = "box"
             password = "score"
