@@ -6,13 +6,10 @@
 		<r:require modules="bootstrap"/>
 	</head>
 	<body>
-		<div class="page-header">
-			<h1>Leaderboard (WOD ${wod.number}: ${wod.name})</h1>
-		</div>
 		<div class="row-fluid">
 		<div class="span6">
-			<h1>Men</h1>
-			<table class="table table-striped">
+			<h4>Men (WOD ${wod.number}: ${wod.name})</h4>
+			<table class="table table-striped table-condensed">
 				<thead>
 					<tr>
 						<th>&nbsp;</th>
@@ -33,8 +30,8 @@
 		</div>
 
 		<div class="span6">
-			<h1>Women</h1>
-			<table class="table table-striped">
+			<h4>Women (WOD ${wod.number}: ${wod.name})</h4>
+			<table class="table table-striped table-condensed">
 				<thead>
 					<tr>
 						<th>&nbsp;</th>

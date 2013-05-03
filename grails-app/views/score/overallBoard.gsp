@@ -8,8 +8,8 @@
 	<body>
 		<div class="row-fluid">
 		<div class="span6">
-			<h1>Men</h1>
-			<table class="table table-striped">
+			<h4>Men</h4>
+			<table class="table table-striped table-condensed">
 				<thead>
 					<tr>
 						<th>&nbsp;</th>
@@ -36,8 +36,8 @@
 			</table>
 		</div>
 		<div class="span6">
-			<h1>Women</h1>
-			<table class="table table-striped">
+			<h4>Women</h4>
+			<table class="table table-striped table-condensed">
 				<thead>
 					<tr>
 						<th>&nbsp;</th>
